@@ -2,6 +2,7 @@ package app.controller;
 
 import app.model.User;
 import app.service.AuthenticationService;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,14 +15,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
-
 @Controller
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
-
 
     public AuthenticationController(AuthenticationService authenticationService,
                                     AuthenticationManager authenticationManager,

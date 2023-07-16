@@ -14,7 +14,7 @@ public interface AccountDao {
 
     List<Account> getAll();
 
-    List<Account> getAllByUser(Long UserId);
+    List<Account> getAllByUser(Long userId);
 
     Account update(Account account);
 

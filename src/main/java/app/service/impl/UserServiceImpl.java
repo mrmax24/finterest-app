@@ -3,9 +3,9 @@ package app.service.impl;
 import app.dao.UserDao;
 import app.model.User;
 import app.service.UserService;
+import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {

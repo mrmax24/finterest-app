@@ -2,19 +2,19 @@ package app.dao.impl;
 
 import app.dao.ReportDao;
 import app.model.Transaction;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
-import org.springframework.stereotype.Repository;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class ReportDaoImpl implements ReportDao {
@@ -35,8 +35,8 @@ public class ReportDaoImpl implements ReportDao {
             Expression<BigDecimal> sumAmount = builder.sum(root.get("amount"));
             Expression<Number> percentage;
 
-            boolean filtersApplied = (accountIds != null && !accountIds.isEmpty()) ||
-                    (categoryId != null) || (monthYear != null);
+            boolean filtersApplied = (accountIds != null && !accountIds.isEmpty())
+                    || (categoryId != null) || (monthYear != null);
 
             if (filtersApplied) {
                 if (monthYear != null && !monthYear.isEmpty()) {
@@ -45,40 +45,49 @@ public class ReportDaoImpl implements ReportDao {
                         int month = Integer.parseInt(dateParts[0]);
                         int year = Integer.parseInt(dateParts[1]);
 
-                        Subquery<BigDecimal> totalAmountMonthSubquery = criteriaQuery.subquery(BigDecimal.class);
-                        Root<Transaction> totalAmountMonthRoot = totalAmountMonthSubquery.from(Transaction.class);
-                        totalAmountMonthSubquery.select(builder.sum(totalAmountMonthRoot.get("amount")));
+                        Subquery<BigDecimal> totalAmountMonthSubquery =
+                                criteriaQuery.subquery(BigDecimal.class);
+                        Root<Transaction> totalAmountMonthRoot
+                                = totalAmountMonthSubquery.from(Transaction.class);
+                        totalAmountMonthSubquery.select(builder.sum(totalAmountMonthRoot
+                                .get("amount")));
                         totalAmountMonthSubquery.where(
                                 builder.and(
-                                        builder.equal(totalAmountMonthRoot.get("account").get("user").get("id"), userId),
+                                        builder.equal(totalAmountMonthRoot.get("account")
+                                                .get("user").get("id"), userId),
                                         builder.equal(builder.function("MONTH", Integer.class,
-                                                builder.function("STR_TO_DATE", Date.class, totalAmountMonthRoot.get("date"),
+                                                builder.function("STR_TO_DATE", Date.class,
+                                                        totalAmountMonthRoot.get("date"),
                                                         builder.literal("%d-%m-%Y"))), month),
                                         builder.equal(builder.function("YEAR", Integer.class,
-                                                builder.function("STR_TO_DATE", Date.class, totalAmountMonthRoot.get("date"),
+                                                builder.function("STR_TO_DATE", Date.class,
+                                                        totalAmountMonthRoot.get("date"),
                                                         builder.literal("%d-%m-%Y"))), year)
                                 )
                         );
-                        Expression<BigDecimal> totalAmountMonth = totalAmountMonthSubquery.getSelection();
+                        Expression<BigDecimal> totalAmountMonth =
+                                totalAmountMonthSubquery.getSelection();
                         percentage = builder.quot(sumAmount, totalAmountMonth);
                     } else {
-                        percentage = builder.literal(0); // Встановлення нульового відсотку, якщо вибрано інші фільтри, але не вибрано місяць
+                        percentage = builder.literal(0);
                     }
                 } else {
-                    Subquery<BigDecimal> totalAmountSubquery = criteriaQuery.subquery(BigDecimal.class);
+                    Subquery<BigDecimal> totalAmountSubquery =
+                            criteriaQuery.subquery(BigDecimal.class);
                     Root<Transaction> totalAmountRoot = totalAmountSubquery.from(Transaction.class);
                     totalAmountSubquery.select(builder.sum(totalAmountRoot.get("amount")));
-                    totalAmountSubquery.where(builder.equal(totalAmountRoot.get("account").get("user").get("id"), userId));
+                    totalAmountSubquery.where(builder.equal(totalAmountRoot.get("account")
+                            .get("user").get("id"), userId));
 
                     Expression<BigDecimal> totalAmount = totalAmountSubquery.getSelection();
                     percentage = builder.quot(sumAmount, totalAmount);
                 }
             } else {
-                // Підзапит для обчислення загальної суми amount для обраних облікових записів користувача за весь час
                 Subquery<BigDecimal> totalAmountSubquery = criteriaQuery.subquery(BigDecimal.class);
                 Root<Transaction> totalAmountRoot = totalAmountSubquery.from(Transaction.class);
                 totalAmountSubquery.select(builder.sum(totalAmountRoot.get("amount")));
-                totalAmountSubquery.where(builder.equal(totalAmountRoot.get("account").get("user").get("id"), userId));
+                totalAmountSubquery.where(builder.equal(totalAmountRoot.get("account").get("user")
+                        .get("id"), userId));
 
                 Expression<BigDecimal> totalAmount = totalAmountSubquery.getSelection();
 
@@ -93,7 +102,8 @@ public class ReportDaoImpl implements ReportDao {
                     builder.function("ROUND", BigDecimal.class, builder.prod(percentage, 100),
                             builder.literal(0))
             );
-            Predicate userIdPredicate = builder.equal(root.get("account").get("user").get("id"), userId);
+            Predicate userIdPredicate = builder.equal(root.get("account").get("user")
+                    .get("id"), userId);
 
             if (accountIds != null && !accountIds.isEmpty()) {
                 if (!accountIds.contains(-1L)) {
@@ -105,7 +115,8 @@ public class ReportDaoImpl implements ReportDao {
 
             if (categoryId != null) {
                 Predicate categoryIdPredicate = builder.equal(categoryIdExpression, categoryId);
-                categoryAndAccountPredicate = builder.and(categoryAndAccountPredicate, categoryIdPredicate);
+                categoryAndAccountPredicate = builder.and(categoryAndAccountPredicate,
+                        categoryIdPredicate);
             }
             if (monthYear != null && !monthYear.isEmpty()) {
                 String[] dateParts = monthYear.split("-");
@@ -121,7 +132,8 @@ public class ReportDaoImpl implements ReportDao {
                                     builder.function("STR_TO_DATE", Date.class, root.get("date"),
                                             builder.literal("%d-%m-%Y"))), year)
                     );
-                    categoryAndAccountPredicate = builder.and(categoryAndAccountPredicate, monthYearPredicate);
+                    categoryAndAccountPredicate = builder.and(categoryAndAccountPredicate,
+                            monthYearPredicate);
                 }
             }
             criteriaQuery.where(categoryAndAccountPredicate)

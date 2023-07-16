@@ -1,5 +1,8 @@
 package app.model;
 
+import java.math.BigDecimal;
+import java.util.Objects;
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -11,9 +14,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.math.BigDecimal;
-import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "accounts")
@@ -84,19 +84,23 @@ public class Account {
 
     @Override
     public String toString() {
-        return "Account{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", balance=" + balance +
-                ", user=" + user +
-                ", transactionCategories=" + transactionCategories +
-                '}';
+        return "Account{"
+                + "id=" + id
+                + ", name='" + name + '\''
+                + ", balance=" + balance
+                + ", user=" + user
+                + ", transactionCategories=" + transactionCategories
+                + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Account account = (Account) o;
         return Objects.equals(id, account.id)
                 && Objects.equals(name, account.name)

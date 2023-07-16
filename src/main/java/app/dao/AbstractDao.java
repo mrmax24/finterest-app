@@ -1,11 +1,10 @@
 package app.dao;
 
+import app.exception.DataProcessingException;
+import app.model.Account;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-
-import app.exception.DataProcessingException;
-import app.model.Account;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;

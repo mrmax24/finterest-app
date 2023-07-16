@@ -2,10 +2,10 @@ package app.config;
 
 import app.model.TransactionCategory;
 import app.service.TransactionCategoryService;
-import org.springframework.stereotype.Component;
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.PostConstruct;
+import org.springframework.stereotype.Component;
 
 @Component
 public class DatabaseInitializer {
@@ -19,7 +19,8 @@ public class DatabaseInitializer {
     @PostConstruct
     public void initialize() {
         if (transactionCategoryService.getAll().isEmpty()) {
-            TransactionCategory.CategoryName[] categoryNames = TransactionCategory.CategoryName.values();
+            TransactionCategory.CategoryName[] categoryNames =
+                    TransactionCategory.CategoryName.values();
 
             List<TransactionCategory> transactionCategories = new ArrayList<>();
             for (TransactionCategory.CategoryName categoryName : categoryNames) {

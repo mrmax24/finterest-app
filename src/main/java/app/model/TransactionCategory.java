@@ -1,5 +1,6 @@
 package app.model;
 
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -7,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Objects;
 
 @Entity
 @Table(name = "transaction_category")
@@ -62,16 +62,20 @@ public class TransactionCategory {
 
     @Override
     public String toString() {
-        return "TransactionCategory{" +
-                "id=" + id +
-                ", category=" + category +
-                '}';
+        return "TransactionCategory{"
+                + "id=" + id
+                + ", category=" + category
+                + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         TransactionCategory transactionCategory = (TransactionCategory) o;
         return Objects.equals(id, transactionCategory.id)
                 && Objects.equals(category, transactionCategory.category);

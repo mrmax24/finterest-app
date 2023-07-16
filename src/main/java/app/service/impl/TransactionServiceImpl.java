@@ -1,14 +1,14 @@
 package app.service.impl;
 
-import app.model.Account;
-import app.service.AccountService;
-import org.springframework.stereotype.Service;
 import app.dao.TransactionDao;
+import app.model.Account;
 import app.model.Transaction;
+import app.service.AccountService;
 import app.service.TransactionService;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -23,11 +23,11 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Transaction add(Transaction transaction) throws RuntimeException {
-         Transaction addedTransaction = transactionDao.add(transaction);
-         Account account = transaction.getAccount();
-         BigDecimal expenseAmount = transaction.getAmount();
-         accountService.updateBalanceWithExpenses(account, expenseAmount);
-         return addedTransaction;
+        Transaction addedTransaction = transactionDao.add(transaction);
+        Account account = transaction.getAccount();
+        BigDecimal expenseAmount = transaction.getAmount();
+        accountService.updateBalanceWithExpenses(account, expenseAmount);
+        return addedTransaction;
     }
 
     @Override

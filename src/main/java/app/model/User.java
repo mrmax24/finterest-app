@@ -1,11 +1,11 @@
 package app.model;
 
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Objects;
 
 @Entity
 @Table(name = "users")
@@ -52,13 +52,19 @@ public class User {
         this.password = password;
     }
 
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(login, user.login) && Objects.equals(password, user.password);
+        return Objects.equals(id, user.id)
+                && Objects.equals(email, user.email)
+                && Objects.equals(login, user.login)
+                && Objects.equals(password, user.password);
     }
 
     @Override
@@ -68,11 +74,11 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+        return "User{"
+                + "id=" + id
+                + ", email='" + email + '\''
+                + ", login='" + login + '\''
+                + ", password='" + password + '\''
+                + '}';
     }
 }

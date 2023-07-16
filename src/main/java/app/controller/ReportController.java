@@ -1,4 +1,5 @@
 package app.controller;
+
 import app.model.Account;
 import app.model.TransactionCategory;
 import app.service.AccountService;
@@ -6,14 +7,14 @@ import app.service.ReportService;
 import app.service.TransactionCategoryService;
 import app.service.TransactionService;
 import app.service.session.SessionUserHolder;
+import java.math.BigDecimal;
+import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import java.math.BigDecimal;
-import java.util.List;
 
 @Controller
 @RequestMapping("/report")

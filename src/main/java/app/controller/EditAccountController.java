@@ -6,6 +6,10 @@ import app.model.User;
 import app.service.AccountService;
 import app.service.TransactionService;
 import app.service.session.SessionUserHolder;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import javax.servlet.http.HttpSession;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/accounts")
@@ -24,7 +24,6 @@ public class EditAccountController {
     private final SessionUserHolder sessionUserHolder;
     private final AccountService accountService;
     private final TransactionService transactionService;
-
 
     public EditAccountController(AccountService accountService,
                                  SessionUserHolder sessionUserHolder,

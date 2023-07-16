@@ -1,13 +1,13 @@
 package app.dao.impl;
 
 import app.dao.AbstractDao;
+import app.dao.TransactionDao;
 import app.model.Transaction;
+import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
-import app.dao.TransactionDao;
-import java.util.List;
 
 @Repository
 public class TransactionDaoImpl extends AbstractDao<Transaction> implements TransactionDao {

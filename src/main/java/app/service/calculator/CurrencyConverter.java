@@ -12,10 +12,10 @@ import org.json.JSONObject;
 
 public class CurrencyConverter {
     private static final String API_BASE_URL =
-            "https://api.apilayer.com/exchangerates_data/latest?" +
-                    "apikey=n8j1GFjRKE8xNs2HOOQoMGw5CO3zkdt6";
+            "https://api.apilayer.com/exchangerates_data/latest?"
+                    + "apikey=n8j1GFjRKE8xNs2HOOQoMGw5CO3zkdt6";
 
-    public static BigDecimal convertToUAH(BigDecimal amount, String currencyCode)
+    public static BigDecimal convertToUah(BigDecimal amount, String currencyCode)
             throws IOException {
         HttpClient httpClient = HttpClientBuilder.create().build();
         HttpGet request = new HttpGet(API_BASE_URL);

@@ -1,5 +1,7 @@
 package app.model;
 
+import java.math.BigDecimal;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,8 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.math.BigDecimal;
-import java.util.Objects;
 
 @Entity
 @Table(name = "transactions")
@@ -98,21 +98,25 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return "Transaction{" +
-                "id=" + id +
-                ", date='" + date + '\'' +
-                ", note='" + note + '\'' +
-                ", amount=" + amount +
-                ", currency='" + currency + '\'' +
-                ", account=" + account +
-                ", transactionCategory=" + transactionCategory +
-                '}';
+        return "Transaction{"
+                + "id=" + id
+                + ", date='" + date + '\''
+                + ", note='" + note + '\''
+                + ", amount=" + amount
+                + ", currency='" + currency + '\''
+                + ", account=" + account
+                + ", transactionCategory=" + transactionCategory
+                + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Transaction that = (Transaction) o;
         return Objects.equals(id, that.id)
                 && Objects.equals(date, that.date)

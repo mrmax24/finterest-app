@@ -14,13 +14,14 @@ public class SessionUserHolder {
     public SessionUserHolder(UserService userService) {
         this.userService = userService;
     }
-    public User getUserFromSession () {
+
+    public User getUserFromSession() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principal =
                 (org.springframework.security.core.userdetails.User) auth.getPrincipal();
         String username = principal.getUsername();
         return userService.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User with username" +
-                        " not found: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("User with username"
+                        + " not found: " + username));
     }
 }

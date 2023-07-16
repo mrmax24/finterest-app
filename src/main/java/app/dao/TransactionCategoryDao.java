@@ -11,5 +11,5 @@ public interface TransactionCategoryDao {
 
     TransactionCategory getByName(String category);
 
-    Optional <TransactionCategory> get(Long id);
+    Optional<TransactionCategory> get(Long id);
 }

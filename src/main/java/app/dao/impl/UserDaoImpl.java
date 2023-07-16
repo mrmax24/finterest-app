@@ -4,11 +4,11 @@ import app.dao.AbstractDao;
 import app.dao.UserDao;
 import app.exception.DataProcessingException;
 import app.model.User;
+import java.util.Optional;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
-import java.util.Optional;
 
 @Repository
 public class UserDaoImpl extends AbstractDao<User> implements UserDao {

@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    private final UserService userService;
     private static final List<GrantedAuthority> authorities
             = Collections.singletonList(new SimpleGrantedAuthority("USER"));
+    private final UserService userService;
 
     public CustomUserDetailsService(UserService userService) {
         this.userService = userService;

@@ -3,13 +3,13 @@ package app.service.impl;
 import app.dao.TransactionCategoryDao;
 import app.model.TransactionCategory;
 import app.service.TransactionCategoryService;
-import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 @Service
-public class TransactionCategoryServiceImpl implements TransactionCategoryService  {
-     private TransactionCategoryDao transactionCategoryDao;
+public class TransactionCategoryServiceImpl implements TransactionCategoryService {
+    private TransactionCategoryDao transactionCategoryDao;
 
     public TransactionCategoryServiceImpl(TransactionCategoryDao transactionCategoryDao) {
         this.transactionCategoryDao = transactionCategoryDao;
