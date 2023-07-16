@@ -1,8 +1,6 @@
 package app.dao;
 
-import app.model.Account;
 import app.model.Transaction;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -24,4 +22,3 @@ public interface TransactionDao {
 
     Transaction updateBalanceWithRefund(Transaction t, BigDecimal amountToRefund);
 }
-

@@ -3,6 +3,7 @@ package app.dao;
 import java.util.List;
 
 public interface ReportDao {
-    List<Object[]> getGeneralReport(Long userId);
 
+    List<Object[]> getExpensesByCategoryAndMonthAndCategory(
+            Long userId, List<Long> accountIds, Long categoryId, String selectedDate);
 }

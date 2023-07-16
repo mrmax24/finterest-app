@@ -1,11 +1,19 @@
 package app.dao.impl;
 
 import app.dao.ReportDao;
+import app.model.Transaction;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
-
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -17,18 +25,113 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public List<Object[]> getGeneralReport(Long userId) {
+    public List<Object[]> getExpensesByCategoryAndMonthAndCategory(
+            Long userId, List<Long> accountIds, Long categoryId, String monthYear) {
         try (Session session = sessionFactory.openSession()) {
-            Query<Object[]> query = session.createQuery(
-                    "SELECT t.transactionCategory.category, SUM(t.amount), " +
-                            "ROUND(SUM(t.amount) / (SELECT SUM(t2.amount) " +
-                            "FROM Transaction t2 WHERE t2.account.user.id = :userId) * 100, 0) " +
-                            "FROM Transaction t " +
-                            "WHERE t.account.user.id = :userId " +
-                            "GROUP BY t.transactionCategory " +
-                            "ORDER BY SUM(t.amount) DESC", Object[].class);
-            query.setParameter("userId", userId);
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<Object[]> criteriaQuery = builder.createQuery(Object[].class);
+            Root<Transaction> root = criteriaQuery.from(Transaction.class);
 
+            Expression<BigDecimal> sumAmount = builder.sum(root.get("amount"));
+            Expression<Number> percentage;
+
+            boolean filtersApplied = (accountIds != null && !accountIds.isEmpty()) ||
+                    (categoryId != null) || (monthYear != null);
+
+            if (filtersApplied) {
+                if (monthYear != null && !monthYear.isEmpty()) {
+                    String[] dateParts = monthYear.split("-");
+                    if (dateParts.length == 2) {
+                        int month = Integer.parseInt(dateParts[0]);
+                        int year = Integer.parseInt(dateParts[1]);
+
+                        Subquery<BigDecimal> totalAmountMonthSubquery = criteriaQuery.subquery(BigDecimal.class);
+                        Root<Transaction> totalAmountMonthRoot = totalAmountMonthSubquery.from(Transaction.class);
+                        totalAmountMonthSubquery.select(builder.sum(totalAmountMonthRoot.get("amount")));
+                        totalAmountMonthSubquery.where(
+                                builder.and(
+                                        builder.equal(totalAmountMonthRoot.get("account").get("user").get("id"), userId),
+                                        builder.equal(builder.function("MONTH", Integer.class,
+                                                builder.function("STR_TO_DATE", Date.class, totalAmountMonthRoot.get("date"),
+                                                        builder.literal("%d-%m-%Y"))), month),
+                                        builder.equal(builder.function("YEAR", Integer.class,
+                                                builder.function("STR_TO_DATE", Date.class, totalAmountMonthRoot.get("date"),
+                                                        builder.literal("%d-%m-%Y"))), year)
+                                )
+                        );
+                        Expression<BigDecimal> totalAmountMonth = totalAmountMonthSubquery.getSelection();
+                        percentage = builder.quot(sumAmount, totalAmountMonth);
+                    } else {
+                        percentage = builder.literal(0); // Встановлення нульового відсотку, якщо вибрано інші фільтри, але не вибрано місяць
+                    }
+                } else {
+                    Subquery<BigDecimal> totalAmountSubquery = criteriaQuery.subquery(BigDecimal.class);
+                    Root<Transaction> totalAmountRoot = totalAmountSubquery.from(Transaction.class);
+                    totalAmountSubquery.select(builder.sum(totalAmountRoot.get("amount")));
+                    totalAmountSubquery.where(builder.equal(totalAmountRoot.get("account").get("user").get("id"), userId));
+
+                    Expression<BigDecimal> totalAmount = totalAmountSubquery.getSelection();
+                    percentage = builder.quot(sumAmount, totalAmount);
+                }
+            } else {
+                // Підзапит для обчислення загальної суми amount для обраних облікових записів користувача за весь час
+                Subquery<BigDecimal> totalAmountSubquery = criteriaQuery.subquery(BigDecimal.class);
+                Root<Transaction> totalAmountRoot = totalAmountSubquery.from(Transaction.class);
+                totalAmountSubquery.select(builder.sum(totalAmountRoot.get("amount")));
+                totalAmountSubquery.where(builder.equal(totalAmountRoot.get("account").get("user").get("id"), userId));
+
+                Expression<BigDecimal> totalAmount = totalAmountSubquery.getSelection();
+
+                percentage = builder.quot(sumAmount, totalAmount);
+            }
+
+            Expression<Long> categoryIdExpression = root.get("transactionCategory").get("id");
+
+            criteriaQuery.multiselect(
+                    root.get("transactionCategory").get("category"),
+                    sumAmount,
+                    builder.function("ROUND", BigDecimal.class, builder.prod(percentage, 100),
+                            builder.literal(0))
+            );
+            Predicate userIdPredicate = builder.equal(root.get("account").get("user").get("id"), userId);
+
+            if (accountIds != null && !accountIds.isEmpty()) {
+                if (!accountIds.contains(-1L)) {
+                    Predicate accountIdPredicate = root.get("account").get("id").in(accountIds);
+                    userIdPredicate = builder.and(userIdPredicate, accountIdPredicate);
+                }
+            }
+            Predicate categoryAndAccountPredicate = userIdPredicate;
+
+            if (categoryId != null) {
+                Predicate categoryIdPredicate = builder.equal(categoryIdExpression, categoryId);
+                categoryAndAccountPredicate = builder.and(categoryAndAccountPredicate, categoryIdPredicate);
+            }
+            if (monthYear != null && !monthYear.isEmpty()) {
+                String[] dateParts = monthYear.split("-");
+                if (dateParts.length == 2) {
+                    int month = Integer.parseInt(dateParts[0]);
+                    int year = Integer.parseInt(dateParts[1]);
+
+                    Predicate monthYearPredicate = builder.and(
+                            builder.equal(builder.function("MONTH", Integer.class,
+                                    builder.function("STR_TO_DATE", Date.class, root.get("date"),
+                                            builder.literal("%d-%m-%Y"))), month),
+                            builder.equal(builder.function("YEAR", Integer.class,
+                                    builder.function("STR_TO_DATE", Date.class, root.get("date"),
+                                            builder.literal("%d-%m-%Y"))), year)
+                    );
+                    categoryAndAccountPredicate = builder.and(categoryAndAccountPredicate, monthYearPredicate);
+                }
+            }
+            criteriaQuery.where(categoryAndAccountPredicate)
+                    .groupBy(
+                            root.get("transactionCategory").get("category"),
+                            categoryIdExpression
+                    )
+                    .orderBy(builder.desc(sumAmount));
+
+            Query<Object[]> query = session.createQuery(criteriaQuery);
             return query.getResultList();
         }
     }

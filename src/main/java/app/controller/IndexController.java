@@ -33,6 +33,6 @@ public class IndexController {
 
         List<Account> accounts = accountService.getAllByUser(user.getId());
         model.addAttribute("accounts", accounts);
-        return "index";
+        return "redirect:/dashboard";
     }
 }

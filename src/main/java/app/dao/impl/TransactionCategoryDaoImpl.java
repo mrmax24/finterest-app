@@ -17,5 +17,4 @@ public class TransactionCategoryDaoImpl extends AbstractDao<TransactionCategory>
     public TransactionCategory getByName(String category) {
         return null;
     }
-
 }

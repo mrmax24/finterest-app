@@ -2,7 +2,6 @@ package app.service.impl;
 
 import app.model.Account;
 import app.service.AccountService;
-import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import app.dao.TransactionDao;
 import app.model.Transaction;
@@ -15,28 +14,20 @@ import java.util.Optional;
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionDao transactionDao;
     private final AccountService accountService;
-    private final Logger logger;
 
     public TransactionServiceImpl(TransactionDao transactionDao,
-                                  AccountService accountService, Logger logger) {
+                                  AccountService accountService) {
         this.transactionDao = transactionDao;
         this.accountService = accountService;
-        this.logger = logger;
     }
 
     @Override
     public Transaction add(Transaction transaction) throws RuntimeException {
-        logger.debug("Transaction was added: ", transaction);
-        BigDecimal balance = transaction.getAccount().getBalance();
-        if (balance.subtract(transaction.getAmount()).compareTo(BigDecimal.ZERO) >= 0) {
-            Transaction addedTransaction = transactionDao.add(transaction);
-            Account account = transaction.getAccount();
-            BigDecimal expenseAmount = transaction.getAmount();
-            accountService.updateBalanceWithExpenses(account, expenseAmount);
-            return addedTransaction;
-        } else {
-            throw new RuntimeException("Account has insufficient funds");
-        }
+         Transaction addedTransaction = transactionDao.add(transaction);
+         Account account = transaction.getAccount();
+         BigDecimal expenseAmount = transaction.getAmount();
+         accountService.updateBalanceWithExpenses(account, expenseAmount);
+         return addedTransaction;
     }
 
     @Override

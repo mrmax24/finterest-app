@@ -2,7 +2,6 @@ package app.dao.impl;
 
 import app.dao.AbstractDao;
 import app.exception.DataProcessingException;
-import app.model.User;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -10,9 +9,7 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import app.dao.AccountDao;
 import app.model.Account;
-
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,7 +60,6 @@ public class AccountDaoImpl extends AbstractDao<Account> implements AccountDao {
         } catch (HibernateException e) {
             e.printStackTrace();
         }
-
         return totalBalance;
     }
 }

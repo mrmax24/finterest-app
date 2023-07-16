@@ -2,11 +2,9 @@ package app.security;
 
 import app.model.User;
 import app.service.UserService;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User.UserBuilder;
@@ -20,7 +18,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserService userService;
     private static final List<GrantedAuthority> authorities
             = Collections.singletonList(new SimpleGrantedAuthority("USER"));
-
 
     public CustomUserDetailsService(UserService userService) {
         this.userService = userService;

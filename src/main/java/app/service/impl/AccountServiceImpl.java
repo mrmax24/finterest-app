@@ -1,12 +1,9 @@
 package app.service.impl;
 
-import app.model.Transaction;
-import app.model.User;
 import org.springframework.stereotype.Service;
 import app.dao.AccountDao;
 import app.model.Account;
 import app.service.AccountService;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -77,28 +74,6 @@ public class AccountServiceImpl implements AccountService {
         account.setBalance(newBalance);
         accountDao.update(account);
         return account;
-    }
-
-    @Override
-    public Account updateBalanceWithExpensesWhenEdit(Account t, Transaction tr, BigDecimal expenseAmount) {
-        return null;
-    }
-
-    public void updateBalanceWithExpensesAfterEdit(Account account, Transaction transaction,
-                                                     BigDecimal expenseAmount) {
-        BigDecimal currentBalance = account.getBalance();
-        if (transaction.getAmount().subtract(expenseAmount).compareTo(BigDecimal.ZERO) > 0) {
-            currentBalance = currentBalance.subtract(transaction.getAmount().subtract(expenseAmount));
-        } else if (expenseAmount.subtract(transaction.getAmount()).compareTo(BigDecimal.ZERO) > 0) {
-            currentBalance = currentBalance.add(expenseAmount.subtract(transaction.getAmount()));
-        }
-        account.setBalance(currentBalance);
-        accountDao.update(account);
-    }
-
-    @Override
-    public Account findByAccountNumber(String accountNumber) {
-        return null;
     }
 
     @Override

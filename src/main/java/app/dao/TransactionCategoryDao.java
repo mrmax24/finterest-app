@@ -1,7 +1,6 @@
 package app.dao;
 
 import app.model.TransactionCategory;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -13,5 +12,4 @@ public interface TransactionCategoryDao {
     TransactionCategory getByName(String category);
 
     Optional <TransactionCategory> get(Long id);
-
 }

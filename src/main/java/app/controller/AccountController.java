@@ -50,27 +50,66 @@ public class AccountController {
         List<Account> accountsByUser = accountService.getAllByUser(userFromSession.getId());
         model.addAttribute("accounts", accountsByUser);
         List<Transaction> allTransactions = transactionService.getAll();
-        model.addAttribute("allTransactions", allTransactions);
+        List<Transaction> transactionsByUser = allTransactions.stream()
+                .filter(t -> t.getAccount().getUser().getId().equals(userFromSession.getId())).toList();
+        model.addAttribute("allTransactions", transactionsByUser);
         BigDecimal currentBalance = accountService.getTotalBalance(userFromSession.getId());
         model.addAttribute("currentBalance", currentBalance);
         List<TransactionCategory> allCategories = transactionCategoryService.getAll();
         model.addAttribute("allCategories", allCategories);
-        Object errorMessageFromSession = session.getAttribute("errorMessage");
-        if (errorMessageFromSession != null) {
-            model.addAttribute("errorMessage", errorMessageFromSession);
-            session.removeAttribute("errorMessage");
+
+        Object nullAmountError = session.getAttribute("nullAmountErrorMessage");
+        if (nullAmountError != null) {
+            model.addAttribute("amountIsNullError", nullAmountError);
+            session.removeAttribute("nullAmountErrorMessage");
         } else {
-            model.addAttribute("errorMessage", "");
+            model.addAttribute("amountIsNullError", "");
+        }
+
+        Object invalidAmountError = session.getAttribute("invalidAmountErrorMessage");
+        if (invalidAmountError != null) {
+            model.addAttribute("amountIsNotValidError", invalidAmountError);
+            session.removeAttribute("invalidAmountErrorMessage");
+        } else {
+            model.addAttribute("amountIsNotValidError", "");
+        }
+
+        Object insufficientAmountError = session.getAttribute("insufficientAmountErrorMessage");
+        if (insufficientAmountError != null) {
+            model.addAttribute("insufficientAmountError", insufficientAmountError);
+            session.removeAttribute("insufficientAmountErrorMessage");
+        } else {
+            model.addAttribute("insufficientAmountError", "");
+        }
+
+        Object accountIsNegativeError = session.getAttribute("errorMessageFromAccount");
+        if (accountIsNegativeError != null) {
+            model.addAttribute("accountIsNegativeError", accountIsNegativeError);
+            session.removeAttribute("errorMessageFromAccount");
+        } else {
+            model.addAttribute("accountIsNegativeError", "");
         }
         return "dashboard";
     }
 
+    @PostMapping("/add-account")
+    public String addAccountFromDashboard(@RequestParam("account_name") String name,
+                                          @RequestParam("account_balance") BigDecimal balance, HttpSession session) {
+        User userFromSession = sessionUserHolder.getUserFromSession();
+        Account account = new Account(name, balance, userFromSession);
+        try {
+            accountService.add(account);
+        } catch (RuntimeException e) {
+            session.setAttribute("errorMessageFromAccount", e.getMessage());
+        }
+        return "redirect:/dashboard";
+    }
 
     @PostMapping
     public String addTransaction(@RequestParam("category") Long categoryId,
                                  @RequestParam("date") String date,
                                  @RequestParam("note") String note,
-                                 @RequestParam("amount") BigDecimal amount,
+                                 @RequestParam(value = "amount", required = false) BigDecimal amount,
                                  @RequestParam("currency") String currency,
                                  @RequestParam("account") Long accountId, HttpSession session) throws IOException {
         if (!currency.equals("UAH")) {
@@ -82,12 +121,16 @@ public class AccountController {
         Account chosenAccount = account.orElseGet(Account::new);
         Optional<TransactionCategory> transactionCategoryOptional = transactionCategoryService.get(categoryId);
         TransactionCategory transactionCategory = transactionCategoryOptional.get();
-        try {
+        if (amount == null) {
+            session.setAttribute("nullAmountErrorMessage", "Field 'amount' cannot be empty");
+        } else if (amount.compareTo(BigDecimal.ZERO) < 0) {
+            session.setAttribute("invalidAmountErrorMessage", "Amount must be greater than or equal to zero");
+        } else if (chosenAccount.getBalance().compareTo(amount) < 0) {
+            session.setAttribute("insufficientAmountErrorMessage", "Account " + "'" + chosenAccount.getName()
+                    + "'" + " has insufficient funds");
+        } else {
             Transaction transaction = new Transaction(transactionCategory, date, note, amount, currency, chosenAccount);
             transactionService.add(transaction);
-        } catch (RuntimeException e) {
-            session.setAttribute("errorMessage", "Account " + chosenAccount.getName()
-                    + " has insufficient funds");
         }
         return "redirect:/dashboard";
     }
@@ -104,7 +147,7 @@ public class AccountController {
                                   @RequestParam("category") Long categoryId,
                                   @RequestParam("date") String date,
                                   @RequestParam("note") String note,
-                                  @RequestParam("amount") BigDecimal amount,
+                                  @RequestParam(value = "amount", required = false) BigDecimal amount,
                                   @RequestParam("currency") String currency, HttpSession session) throws IOException {
 
         if (!currency.equals("UAH")) {
@@ -113,48 +156,44 @@ public class AccountController {
         Optional<Account> optionalAccount = accountService.get(accountId);
         Optional<Transaction> optionalTransaction = transactionService.get(transactionId);
         Optional<TransactionCategory> transactionCategoryOptional = transactionCategoryService.get(categoryId);
-        TransactionCategory transactionCategory = transactionCategoryOptional.get();
 
-        if (optionalAccount.isPresent() && optionalTransaction.isPresent()) {
+        if (optionalAccount.isPresent() && optionalTransaction.isPresent() && transactionCategoryOptional.isPresent()) {
             Account account = optionalAccount.get();
             Transaction transaction = optionalTransaction.get();
+            TransactionCategory transactionCategory = transactionCategoryOptional.get();
 
             BigDecimal oldAmount = transaction.getAmount();
             BigDecimal newAmount = amount;
 
-            // Розрахунок різниці між старою та новою сумою транзакції
-            BigDecimal difference = newAmount.subtract(oldAmount);
-
-            // Оновлення балансу рахунку
             BigDecimal currentBalance = account.getBalance();
-            if (newAmount.compareTo(oldAmount) > 0) {
-                BigDecimal balanceDifference = newAmount.subtract(oldAmount);
-                currentBalance = currentBalance.subtract(balanceDifference);
-            } else if (newAmount.compareTo(oldAmount) < 0) {
-                BigDecimal balanceDifference = oldAmount.subtract(newAmount);
-                currentBalance = currentBalance.add(balanceDifference);
+            if (newAmount != null && oldAmount != null) {
+                if (newAmount.compareTo(oldAmount) > 0) {
+                    BigDecimal balanceDifference = newAmount.subtract(oldAmount);
+                    currentBalance = currentBalance.subtract(balanceDifference);
+                } else if (newAmount.compareTo(oldAmount) < 0) {
+                    BigDecimal balanceDifference = oldAmount.subtract(newAmount);
+                    currentBalance = currentBalance.add(balanceDifference);
+                }
             }
-            account.setBalance(currentBalance);
-
-            // Оновлення інших полів транзакції
-            if (currentBalance.compareTo(BigDecimal.ZERO) >= 0) {
-                transaction.setAccount(optionalAccount.get());
+            if (amount == null) {
+                session.setAttribute("nullAmountErrorMessage", "Field 'amount' cannot be empty");
+            } else if (amount.compareTo(BigDecimal.ZERO) < 0) {
+                session.setAttribute("invalidAmountErrorMessage", "Amount must be greater than or equal to zero");
+            } else if (currentBalance.compareTo(BigDecimal.ZERO) <= 0) {
+                session.setAttribute("insufficientAmountErrorMessage", "Account " + "'" + account.getName()
+                        + "'" + " has insufficient funds");
+            } else {
+                account.setBalance(currentBalance);
+                transaction.setAccount(account);
                 transaction.setTransactionCategory(transactionCategory);
                 transaction.setDate(date);
                 transaction.setNote(note);
                 transaction.setAmount(amount);
                 transaction.setCurrency(currency);
-
-                // Збереження оновлених даних
                 accountService.update(account);
                 transactionService.update(transaction);
-            } else {
-                session.setAttribute("errorMessage", "Account " + account.getName()
-                        + " has insufficient funds");
             }
         }
         return "redirect:/dashboard";
     }
 }
-
-

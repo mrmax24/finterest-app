@@ -103,29 +103,6 @@ public abstract class AbstractDao<T> {
         }
     }
 
-    public T updateBalanceWithExpensesWhenEdit(T t, app.model.Transaction tr,
-                                               BigDecimal expenseAmount) {
-        Transaction transaction = null;
-        Session session = null;
-        try {
-            session = factory.openSession();
-            transaction = session.beginTransaction();
-            session.update(t);
-            transaction.commit();
-            return t;
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new DataProcessingException("Can't update "
-                    + clazz.getSimpleName() + " " + t, e);
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-    }
-
     public T updateBalanceWithRefund(T t, BigDecimal amountToRefund) {
         Transaction transaction = null;
         Session session = null;
@@ -137,7 +114,6 @@ public abstract class AbstractDao<T> {
                 Account account = (Account) t;
                 account.setBalance(account.getBalance().add(amountToRefund));
             }
-
             session.update(t);
             transaction.commit();
             return t;

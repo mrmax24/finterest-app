@@ -8,10 +8,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/resources/public/favicon.svg">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@300&display=swap"/>
   </head>
   <body>
+  </div>
     <div class="register">
       <div class="header1">
         <div class="logodescription1">
@@ -26,7 +28,7 @@
           <img
             class="personal-finance-manager1"
             alt=""
-            src="/webapp/public/personal-finance-manager.svg">
+            src="">
         </div>
         <div class="btns1">
           <button class="buttons3" primary>
@@ -86,7 +88,7 @@
                 />
               </div>
               <div class="icontxt">
-                <img class="icon-info" alt="" src="/webapp/public/icon--info.svg">
+                <img class="icon-info" alt="" src="">
                 <div class="passwords-must-have-container">
                   <span class="passwords-must-have">Passwords must have at least</span>
                   <b class="character-and-has">8 characters and include lowercase, uppercase, number, and a special character</b>

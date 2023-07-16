@@ -22,11 +22,6 @@ public interface AccountService {
 
     Account updateBalanceWithRefund(Account t, BigDecimal amountToRefund);
 
-    Account updateBalanceWithExpensesWhenEdit(Account t, app.model.Transaction tr,
-                                               BigDecimal expenseAmount);
-
-    Account findByAccountNumber(String accountNumber);
-
     BigDecimal getTotalBalance(Long userId);
 
     void delete(Long accountId);

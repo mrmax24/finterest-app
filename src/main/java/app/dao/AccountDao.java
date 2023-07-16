@@ -1,8 +1,6 @@
 package app.dao;
 
 import app.model.Account;
-import app.model.User;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;

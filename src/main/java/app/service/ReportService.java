@@ -3,5 +3,7 @@ package app.service;
 import java.util.List;
 
 public interface ReportService {
-    List<Object[]> getGeneralReport(Long userId);
+
+    List<Object[]> getExpensesByCategoryAndMonthAndCategory(
+            Long userId, List<Long> accountIds, Long categoryId, String selectedDate);
 }
