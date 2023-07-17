@@ -1,13 +1,16 @@
-FROM openjdk:17-jdk-slim
-
+#
+# Build stage
+#
+FROM maven:3.8.3-openjdk-17 AS build
 WORKDIR /app
+COPY . /app/
+RUN mvn clean package
 
-COPY pom.xml .
-
-RUN mvn package -DskipTests
-
-COPY target/Finterest-1.0-SNAPSHOT.war .
-
+#
+# Package stage
+#
+FROM openjdk:17-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar /app/app.jar
 EXPOSE 8080
-
-CMD ["java", "-jar", "Finterest-1.0-SNAPSHOT.war"]
+ENTRYPOINT ["java","-jar","app.jar"]
