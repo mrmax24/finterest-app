@@ -1,16 +1,12 @@
-#
 # Build stage
-#
 FROM maven:3.8.3-openjdk-17 AS build
 WORKDIR /app
 COPY . /app/
 RUN mvn clean package
 
-#
 # Package stage
-#
-FROM openjdk:17-alpine
-WORKDIR /app
-COPY --from=build /app/target/*.war /app/app.war
+FROM tomcat:latest
+WORKDIR /usr/local/tomcat/webapps
+COPY --from=build /app/target/*.war ./app.war
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","app.jar"]
+CMD ["catalina.sh", "run"]
