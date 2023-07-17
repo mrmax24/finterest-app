@@ -1,11 +1,13 @@
-# Build stage
-FROM maven:4.0.0-openjdk-17 AS build
-WORKDIR /app
-COPY . /app/
-RUN mvn clean package
+FROM adoptopenjdk:17-jdk-hotspot
 
-# Package stage
-FROM tomcat:latest
-COPY --from=build /app/target/Finterest-1.0-SNAPSHOT.war /usr/local/tomcat/webapps/app.war
+WORKDIR /app
+
+COPY pom.xml .
+
+RUN mvn package -DskipTests
+
+COPY target/Finterest-1.0-SNAPSHOT.war .
+
 EXPOSE 8080
-CMD ["catalina.sh", "run"]
+
+CMD ["java", "-jar", "Finterest-1.0-SNAPSHOT.war"]
