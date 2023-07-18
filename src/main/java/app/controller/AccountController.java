@@ -52,7 +52,8 @@ public class AccountController {
         List<Transaction> allTransactions = transactionService.getAll();
         List<Transaction> transactionsByUser = allTransactions.stream()
                 .filter(t -> t.getAccount().getUser().getId()
-                        .equals(userFromSession.getId())).toList();
+                        .equals(userFromSession.getId()))
+                .collect(java.util.stream.Collectors.toList());
         model.addAttribute("allTransactions", transactionsByUser);
         BigDecimal currentBalance = accountService.getTotalBalance(userFromSession.getId());
         model.addAttribute("currentBalance", currentBalance);
