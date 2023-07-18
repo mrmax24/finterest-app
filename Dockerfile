@@ -1,14 +1,12 @@
+# Stage 1: Build stage
 FROM maven:3.8.3-openjdk-17 AS build
 WORKDIR /app
-COPY . /app/
+COPY ./Finterest /app/
 RUN mvn clean package
 
-# Package stage
-FROM openjdk:17-alpine
-WORKDIR /app
-COPY --from=build /app/target/*.jar /app/app.jar
+# Stage 2: Package stage
+FROM tomcat:latest
+WORKDIR /usr/local/tomcat/webapps
+COPY --from=build /app/target/Finterest-1.0-SNAPSHOT.war ./
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
-
-
-
+CMD ["catalina.sh", "run"]
