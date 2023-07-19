@@ -3,7 +3,7 @@
 ```bash
 Financial management tool that helps users track their expenses, savings, and
 income securely and confidentially. Developed using Hibernate and Spring frameworks,
-it ensures reliable data storage and retrieval while maintaining user privacy.
+it ensures reliable data storage and retrieval ensuring user privacy is maintained.
 ```
 
 #### [Link to the project]()
