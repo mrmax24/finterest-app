@@ -65,4 +65,12 @@ The project has a Three-Tier Architecture:
    (https://github.com/mrmax24/taxi-service/blob/main/src/main/java/taxi/util/ConnectionUtil.java);
 8. Done. Now just run it;
 9. Use **Postman** to send some http requests;
+
+
+
+## Team
+[Maksym Hrytsyna](https://www.linkedin.com/in/maksym-hrytsyna-12b893274/) (Java developer)
+[Khrystyna Tkachyk](https://www.linkedin.com/in/khrystyna-tkachyk-501433272/) (UI-UX designer)
 ```
+
+
