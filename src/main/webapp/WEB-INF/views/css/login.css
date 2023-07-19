@@ -327,7 +327,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--gap-29xl);
-  background-image: none;
+  background-image: url(/public/login@3x.png);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: top;
