@@ -327,7 +327,8 @@
   align-items: center;
   justify-content: center;
   gap: var(--gap-29xl);
-  background-image: url(/public/login@3x.png);
+  background-image: url(https://github.com/mrmax24/finterest-app/blob/main/src/main/resources/public/login@3x.png?raw=true);
+);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: top;
