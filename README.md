@@ -1,8 +1,9 @@
 # <img src="https://github.com/mrmax24/finterest-app/blob/main/src/main/resources/public/logo1.png?raw=true" align="center" width=35px> Finterest
 ## Project description:
 ```bash
-Financial management tool that helps users track their expenses, savings, and income securely and confidentially. 
-Developed using Hibernate and Spring frameworks, it ensures reliable data storage and retrieval while maintaining user privacy.
+Financial management tool that helps users track their expenses, savings, and
+income securely and confidentially. Developed using Hibernate and Spring frameworks,
+it ensures reliable data storage and retrieval while maintaining user privacy.
 ```
 
 #### [Link to the project]()
