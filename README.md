@@ -69,8 +69,8 @@ The project has a Three-Tier Architecture:
 
 
 ## Team
-[Maksym Hrytsyna](https://www.linkedin.com/in/maksym-hrytsyna-12b893274/) (Java developer)
+[Maksym Hrytsyna](https://www.linkedin.com/in/maksym-hrytsyna-12b893274/) (Java developer) <br>
 [Khrystyna Tkachyk](https://www.linkedin.com/in/khrystyna-tkachyk-501433272/) (UI-UX designer)
-```
+
 
 
