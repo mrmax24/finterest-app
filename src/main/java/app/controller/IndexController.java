@@ -4,15 +4,15 @@ import app.model.Account;
 import app.model.User;
 import app.service.AccountService;
 import app.service.UserService;
-import java.util.List;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+import java.util.List;
+
+@RestController
 public class IndexController {
     private final AccountService accountService;
     private final UserService userService;
@@ -23,7 +23,7 @@ public class IndexController {
     }
 
     @GetMapping("/")
-    public String index(Model model) {
+    public List<Account> index() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principal =
                 (org.springframework.security.core.userdetails.User) auth.getPrincipal();
@@ -33,7 +33,7 @@ public class IndexController {
                         + " username: " + username));
 
         List<Account> accounts = accountService.getAllByUser(user.getId());
-        model.addAttribute("accounts", accounts);
-        return "redirect:/dashboard";
+        System.out.println("It is working!!!");
+        return accounts;
     }
 }
