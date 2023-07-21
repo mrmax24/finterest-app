@@ -61,8 +61,7 @@ The project has a Three-Tier Architecture:
 4. Add you DB properties to db.properties file;
 5. Configure Apache Tomcat version 9.0.50 **Artifact**: `war-exploded artifact`, **Application context**: `"/"`;
 6. Create connection to DB using Database option (Intellij Idea Ultimate).
-7. If you haven't Database option, create ConnectionUtil class and connect to DB manually
-   (src/main/resources/application.properties);
+7. If you haven't Database option, connect DB manually in src/main/resources/application.properties;
 8. Done. Now just run it or use **Postman** to send some http requests;
 
 
@@ -70,6 +69,3 @@ The project has a Three-Tier Architecture:
 ## Team
 [Maksym Hrytsyna](https://www.linkedin.com/in/maksym-hrytsyna-12b893274/) (Java developer) <br>
 [Khrystyna Tkachyk](https://www.linkedin.com/in/khrystyna-tkachyk-501433272/) (UI-UX designer)
-
-
-
