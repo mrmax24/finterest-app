@@ -6,7 +6,7 @@ income securely and confidentially. Developed using Hibernate and Spring framewo
 it ensures reliable data storage and retrieval ensuring user privacy is maintained.
 ```
 
-#### [Link to the project]()
+#### [Link to the project](http://finterest-app-env.eba-qtmmc62y.eu-north-1.elasticbeanstalk.com)
 
 ## How to use the app:
 1. Register and log in;
