@@ -55,16 +55,15 @@ The project has a Three-Tier Architecture:
 
 
 ## Steps to run the program on your computer:
-1. Clone the repo: https://github.com/mrmax24/cinema-app;
+1. Clone the repo: [https://github.com/mrmax24/cinema-app](https://github.com/mrmax24/finterest-app);
 2. Install MySQL;
 3. Create new schema in database;
 4. Add you DB properties to db.properties file;
 5. Configure Apache Tomcat version 9.0.50 **Artifact**: `war-exploded artifact`, **Application context**: `"/"`;
 6. Create connection to DB using Database option (Intellij Idea Ultimate).
 7. If you haven't Database option, create ConnectionUtil class and connect to DB manually
-   (https://github.com/mrmax24/taxi-service/blob/main/src/main/java/taxi/util/ConnectionUtil.java);
-8. Done. Now just run it;
-9. Use **Postman** to send some http requests;
+   (src/main/resources/application.properties);
+8. Done. Now just run it or use **Postman** to send some http requests;
 
 
 
