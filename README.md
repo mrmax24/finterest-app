@@ -55,7 +55,7 @@ The project has a Three-Tier Architecture:
 
 
 ## Steps to run the program on your computer:
-1. Clone the repo: [https://github.com/mrmax24/cinema-app](https://github.com/mrmax24/finterest-app);
+1. Clone the repo: [https://github.com/mrmax24/finterest-app](https://github.com/mrmax24/finterest-app);
 2. Install MySQL;
 3. Create new schema in database;
 4. Add you DB properties to db.properties file;
